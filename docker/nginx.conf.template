@@ -1,0 +1,46 @@
+# Rendered at container start by the nginx image's envsubst step, which fills
+# in ${GUARDIAN_API_KEY}, ${NYT_API_KEY} and ${NEWS_API_KEY} from the
+# environment. Mirrors the dev-server proxy in vite.config.ts.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name _;
+    server_tokens off;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    gzip on;
+    gzip_min_length 1024;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+
+    # Hashed build assets never change, so browsers can keep them forever.
+    location /assets/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        try_files $uri =404;
+    }
+
+    # Every client-side route serves the app shell.
+    location / {
+        add_header Cache-Control "no-cache";
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/guardian/ {
+        include snippets/news-api-proxy.conf;
+        set $args $args&api-key=${GUARDIAN_API_KEY};
+        proxy_pass https://content.guardianapis.com/;
+    }
+
+    location /api/nyt/ {
+        include snippets/news-api-proxy.conf;
+        set $args $args&api-key=${NYT_API_KEY};
+        proxy_pass https://api.nytimes.com/svc/search/v2/;
+    }
+
+    location /api/newsapi/ {
+        include snippets/news-api-proxy.conf;
+        proxy_set_header X-Api-Key "${NEWS_API_KEY}";
+        proxy_pass https://newsapi.org/v2/;
+    }
+}

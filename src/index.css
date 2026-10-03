@@ -1,0 +1,111 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-masthead: 'UnifrakturMaguntia', 'Old English Text MT', serif;
+  --font-headline: 'Playfair Display Variable', Georgia, serif;
+  --font-body: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+
+  --color-paper: #ffffff;
+  --color-paper-deep: #f1f0ed;
+  --color-ink: #1d1b18;
+  --color-ink-soft: #4b463e;
+  --color-ink-faint: #857d6e;
+  --color-rule: rgb(29 27 24 / 0.22);
+  --color-accent: #8f2614;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgb(143 38 20 / 0.2);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /*
+   * Card photos zoom in slightly when their card is hovered or focused; the
+   * frame around them (overflow: hidden) keeps the zoom inside the image box.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    .card-image {
+      transition: transform 500ms ease-out;
+    }
+
+    .group:focus-within .card-image {
+      transform: scale(1.04);
+    }
+
+    /* Touch screens keep :hover after a tap, so only real pointers get the zoom. */
+    @media (hover: hover) {
+      .group:hover .card-image {
+        transform: scale(1.04);
+      }
+    }
+  }
+
+  .kicker {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /*
+   * Column rules between cards at any column count: every cell draws its own
+   * left and top rule, and the list is pulled up/left so the outer rules are
+   * clipped by the wrapper.
+   */
+  .ruled-columns {
+    --gutter: 1.25rem;
+    overflow: hidden;
+  }
+
+  .ruled-columns > ol {
+    margin: -1px calc(-1 * var(--gutter)) 0 calc(-1 * var(--gutter) - 1px);
+  }
+
+  .ruled-columns > ol > li {
+    padding: 1.5rem var(--gutter);
+    border-top: 1px solid var(--color-rule);
+    border-left: 1px solid var(--color-rule);
+  }
+
+  /* The end-of-story mark journalists put under copy. */
+  .end-mark {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--color-ink-faint);
+    letter-spacing: 0.3em;
+  }
+
+  .end-mark::before,
+  .end-mark::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  dialog.drawer::backdrop {
+    background: rgb(29 27 24 / 0.45);
+  }
+}
