@@ -266,7 +266,7 @@ Unknown URLs show a "page not found" message with a link back to the front page.
 - **Masthead:**
   - "The Daily News" in a blackletter font.
   - A top line with "Vol. I · No. ⟨day of year⟩", today's date and "Free edition".
-  - A tagline naming the three sources.
+  - The tagline "All the news you need".
 - **Navigation bar:** between double rules, with the active page in red and underlined.
 - **Typography:** Playfair Display for headlines, Source Serif 4 for body text, and small capitals for labels (`.kicker`).
 - **Colours:** a white background (`paper`), near-black text (`ink`) with softer and fainter tones, thin rule lines, and a deep red accent.
