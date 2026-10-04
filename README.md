@@ -1,6 +1,6 @@
 # The Daily News
 
-A news aggregator styled like a printed broadsheet. It pulls articles from **The Guardian**, **The New York Times** and **NewsAPI.org** into one feed and lets readers search, filter and personalize it.
+A news aggregator styled like a printed broadsheet. It pulls articles from **The Guardian**, **The New York Times** and **News API Org** into one feed and lets readers search, filter and personalize it.
 
 Built with React 19, TypeScript, Vite, TanStack Query, React Router, Zustand and Tailwind CSS.
 
@@ -13,11 +13,26 @@ Built with React 19, TypeScript, Vite, TanStack Query, React Router, Zustand and
 
 ## Documentation
 
-| Document                                     | Contents                                                                 |
-| -------------------------------------------- | ------------------------------------------------------------------------ |
+| Document                                     | Contents                                                                                  |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | [docs/requirements.md](docs/requirements.md) | Requirements from the brief, added requirements, and where each is implemented and tested |
-| [docs/plan.md](docs/plan.md)                 | Architecture, data layer, state, UI, Docker, design principles and decisions |
-| [docs/test.md](docs/test.md)                 | Test approach, the automated test list, manual browser checks and container checks |
+| [docs/plan.md](docs/plan.md)                 | Architecture, data layer, state, UI, Docker, design principles and decisions              |
+| [docs/test.md](docs/test.md)                 | Test approach, the automated test list, manual browser checks and container checks        |
+
+## AI Integrated Workflow
+
+I used Claude Code as a pair programmer. It drafted and wrote the code; I set the direction, reviewed each stage and signed it off before the next one started.
+
+1. **Requirements first.** Before any code, I worked through the brief: which of the listed APIs are actually usable, what "filtering" and a "personalized feed" mean in practice, and what is out of scope. Captured in [docs/requirements.md](docs/requirements.md) by Claude.
+2. **Planning Second** I planned the application within the brief's constraints (React with strict TypeScript, Docker, DRY/KISS/SOLID). Set the architecture (one adapter per news source behind a shared interface, API keys kept server-side behind a proxy, filters stored in the URL), added visual direction. Then Claude captured the plan in [docs/plan.md](docs/plan.md) and I approved it.
+3. **Testing decided up front.** The plan defined what gets unit tests (the adapters, the aggregator, URL state), what gets component tests (search, feed, article cards) and what gets checked by hand. Captured in [docs/test.md](docs/test.md).
+4. **Build, then verify.** Claude implemented the approved plan. I confirmed the test suite passes, then tested the app myself in the browser on desktop and mobile.
+5. **Product decisions stayed with me.** After using the app:
+   - I replaced the textured "newsprint" background with plain white, and switched photos from greyscale to full colour with a subtle hover zoom, for a better UX.
+   - I decided against an in-app article page. Only The Guardian's API returns the full article text, so the reading experience would have been inconsistent across sources.
+6. **Independent review.** I ran a separate Claude Code session to review security (no API keys in the bundle or the repository) and code quality (DRY and SOLID).
+
+AI made the work faster. The requirements, architecture, trade-offs and final sign-off were mine.
 
 ## Running with Docker
 
@@ -111,11 +126,11 @@ See [docs/plan.md](docs/plan.md) for the full design.
 
 ### How filters map to each API
 
-| Filter   | The Guardian                     | New York Times                   | NewsAPI                                                       |
-| -------- | -------------------------------- | -------------------------------- | ------------------------------------------------------------- |
-| Keyword  | `q`                              | `q`                              | `q`                                                           |
-| Date     | `from-date` / `to-date`          | `begin_date` / `end_date`        | `from` / `to` on `/everything`; filtered in the app for headlines |
-| Category | `tag` (e.g. `technology/technology`) | `fq=section.name:(...)`      | `category` on `/top-headlines` (one request per category)     |
+| Filter   | The Guardian                         | New York Times            | NewsAPI                                                           |
+| -------- | ------------------------------------ | ------------------------- | ----------------------------------------------------------------- |
+| Keyword  | `q`                                  | `q`                       | `q`                                                               |
+| Date     | `from-date` / `to-date`              | `begin_date` / `end_date` | `from` / `to` on `/everything`; filtered in the app for headlines |
+| Category | `tag` (e.g. `technology/technology`) | `fq=section.name:(...)`   | `category` on `/top-headlines` (one request per category)         |
 
 NewsAPI only supports categories on `/top-headlines`, and that endpoint ignores dates. So when a category is selected, its date range is applied to the results in the app.
 
