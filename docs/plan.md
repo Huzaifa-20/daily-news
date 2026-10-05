@@ -299,6 +299,10 @@ Unknown URLs show a "page not found" message with a link back to the front page.
 - Headline links say "(opens in a new tab)" for screen readers. Decorative images have empty `alt` text.
 - Result counts are announced through a live region; motion is reduced when requested.
 
+### 8.4 Performance
+
+`ArticleCard` is memoized. Loading another page keeps the existing `Article` objects, so "More stories" renders only the new cards; the ones already on screen don't re-render.
+
 ## 9. Docker (TG-3)
 
 - **`Dockerfile`:**
@@ -348,6 +352,7 @@ Unknown URLs show a "page not found" message with a link back to the front page.
 | Plain white background and full-colour photos with a hover zoom               | Replaced the original paper texture and greyscale photos at the product owner's request     |
 | No in-app article page; headlines open the original story                      | Only The Guardian provides full article text                                                |
 | No dark mode yet                                                                | Deferred by the product owner                                                               |
+| Memoize article cards                                                           | "More stories" then renders only the new cards instead of every card on the page            |
 
 ## 13. Known limitations
 

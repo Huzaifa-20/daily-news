@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Article } from '@/services/news'
 import { formatLongDate, formatRelative } from '@/utils/date'
 import { ArticleImage } from './ArticleImage'
@@ -29,7 +30,14 @@ interface ArticleCardProps {
   size?: CardSize
 }
 
-export function ArticleCard({ article, size = 'standard' }: ArticleCardProps) {
+/**
+ * Memoized: loading another page keeps the existing `Article` objects, so the
+ * cards already on screen skip re-rendering and only the new ones render.
+ */
+export const ArticleCard = memo(function ArticleCard({
+  article,
+  size = 'standard',
+}: ArticleCardProps) {
   const styles = STYLES[size]
 
   return (
@@ -70,4 +78,4 @@ export function ArticleCard({ article, size = 'standard' }: ArticleCardProps) {
       </footer>
     </article>
   )
-}
+})
